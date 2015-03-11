@@ -11,8 +11,8 @@ mysql:
 
 before_script:
   # First we try to use composer to create a Drupal 8 project.
-  - composer selfupdate
-  - composer create-project drupal/drupal . 8.0.*@dev
+  - composer selfupdate --no-progress
+  - composer create-project drupal/drupal drupal 8.0.*@dev --no-progress
   # Let's set up a server!
   # @see: http://docs.travis-ci.com/user/languages/php/
   - sudo apt-get install apache2 libapache2-mod-fastcgi
@@ -32,6 +32,7 @@ before_script:
   - mysql -u root -e "show variables like 'max_allowed_packet'"
 
 script:
+  - cd drupal
   # Allow PHPUnit to fail-out the tests before too much time goes by.
   - ./vendor/bin/phpunit
   # Use run-tests.sh with --keep-results to avoid 2006 error.
