@@ -16,23 +16,6 @@ before_script:
   # First we try to use composer to create a Drupal 8 project.
   - composer selfupdate --no-progress
   - composer create-project drupal/drupal drupal 8.0.*@dev --no-progress
-  # Let's set up a server!
-  # @see: http://docs.travis-ci.com/user/languages/php/
-  - sudo apt-get install apache2 libapache2-mod-fastcgi
-  # Enable php-fpm
-  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-  - sudo a2enmod rewrite actions fastcgi alias
-  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-  # configure apache virtual hosts
-  # NOTE: This requires build/travis-ci-apache.
-  - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/default
-  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
-  - sudo service apache2 restart
-  # Adjust max_allowed_packet
-  - echo -e "[server]\nmax_allowed_packet=64M" | sudo tee -a /etc/mysql/conf.d/drupal.cnf
-  - sudo service mysql restart
-  - mysql -u root -e "show variables like 'max_allowed_packet'"
 
 script:
   - cd drupal
@@ -40,4 +23,4 @@ script:
   - ./vendor/bin/phpunit
   # Use run-tests.sh with --keep-results to avoid 2006 error.
   # Only run the EntityFieldTest class, to keep the time limit down.
-  - php ./core/scripts/run-tests.sh --sqlite test.sqlite --dburl mysql://root:root@localhost/d8 --url http://localhost:8888/ --class 'Drupal\system\Tests\Entity\EntityFieldTest'
+  - php ./core/scripts/run-tests.sh --sqlite test.sqlite --class 'Drupal\system\Tests\Entity\EntityFieldTest'
