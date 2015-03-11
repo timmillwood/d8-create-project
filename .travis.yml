@@ -1,0 +1,39 @@
+# Travis-CI for Drupal 8.
+
+language: php
+php:
+  - 5.4
+
+mysql:
+  database: drupal
+  username: root
+  encoding: utf8
+
+before_script:
+  # First we try to use composer to create a Drupal 8 project.
+  - composer selfupdate
+  - composer create-project drupal/drupal . 8.0.*@dev
+  # Let's set up a server!
+  # @see: http://docs.travis-ci.com/user/languages/php/
+  - sudo apt-get install apache2 libapache2-mod-fastcgi
+  # enable php-fpm
+  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+  - sudo a2enmod rewrite actions fastcgi alias
+  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+  # configure apache virtual hosts
+  # NOTE: This requires build/travis-ci-apache.
+  - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/default
+  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
+  - sudo service apache2 restart
+  # Adjust max_allowed_packet
+  - echo -e "[server]\nmax_allowed_packet=64M" | sudo tee -a /etc/mysql/conf.d/drupal.cnf
+  - sudo service mysql restart
+  - mysql -u root -e "show variables like 'max_allowed_packet'"
+
+script:
+  # Allow PHPUnit to fail-out the tests before too much time goes by.
+  - ./vendor/bin/phpunit
+  # optionally: vendor/bin/phpunit --group YourGroupHere
+  # use run-tests.sh with --keep-results to avoid 2006 error.
+  - php ./core/scripts/run-tests.sh --sqlite test.sqlite --dburl mysql://root:root@localhost/d8 --url http://localhost:8888/ --class 'Drupal\system\Tests\Entity\EntityFieldTest'
