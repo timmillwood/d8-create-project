@@ -8,7 +8,7 @@ This repo is a test of whether you can use Composer's create-project command to 
 
 It uses github and travis-ci to build a Drupal installation and then try to run tests.
 
-We are limiting the tests to PHPUnit and some Entity module tests, because otherwise travis will time out on us.
+We are limiting the tests to PHPUnit and one entity test, because otherwise travis will time out on us.
 
 Why?
 ---
