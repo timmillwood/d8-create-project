@@ -10,6 +10,9 @@ mysql:
   encoding: utf8
 
 before_script:
+  # Set up the Github OAuth token.
+  - "mkdir -p ~/.composer"
+  - cp .travis.composer.config.json ~/.composer/config.json
   # First we try to use composer to create a Drupal 8 project.
   - composer selfupdate --no-progress
   - composer create-project drupal/drupal drupal 8.0.*@dev --no-progress
