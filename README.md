@@ -1,6 +1,10 @@
 Installing Drupal Using Composer Create-Project
 ===
 
+Status
+---
+[![Build Status](https://travis-ci.org/paul-m/d8-create-project.svg?branch=master)](https://travis-ci.org/paul-m/d8-create-project)
+
 What?
 ---
 
