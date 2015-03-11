@@ -20,7 +20,7 @@ before_script:
 script:
   - cd drupal
   # Allow PHPUnit to fail-out the tests before too much time goes by.
-  - ./vendor/bin/phpunit
+  - ./vendor/bin/phpunit -c core/
   # Use run-tests.sh with --keep-results to avoid 2006 error.
   # Only run the EntityFieldTest class, to keep the time limit down.
   - php ./core/scripts/run-tests.sh --sqlite test.sqlite --class 'Drupal\system\Tests\Entity\EntityFieldTest'
