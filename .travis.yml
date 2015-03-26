@@ -14,6 +14,7 @@ before_script:
   # Please change this in your own fork.
   - "mkdir -p ~/.composer"
   - cp .travis.composer.config.json ~/.composer/config.json
+  - composer selfupdate --no-progress
   # Try to use composer to create a Drupal 8 project.
   - composer create-project drupal/drupal drupal 8.0.*@dev --no-progress
   # Create a database.
