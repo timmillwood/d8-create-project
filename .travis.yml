@@ -1,5 +1,4 @@
-# Travis-CI for Drupal 8.
-
+sudo: false
 language: php
 php:
   - 5.4
